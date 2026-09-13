@@ -1,0 +1,9 @@
+const glow=document.querySelector('.cursor-glow');
+let audioOn=false, audioCtx;
+window.addEventListener('pointermove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';document.querySelectorAll('.hero-art .float-chip').forEach((el,i)=>{el.style.transform=`translate(${(e.clientX-innerWidth/2)*(.012+i*.004)}px,${(e.clientY-innerHeight/2)*(.012+i*.004)}px)`})});
+function ping(freq=420){if(!audioOn)return;if(!audioCtx)audioCtx=new AudioContext();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.035,audioCtx.currentTime+.015);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.12);o.connect(g).connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.13)}
+document.querySelectorAll('a,button').forEach((el,i)=>el.addEventListener('mouseenter',()=>ping(300+i*18)));
+const sound=document.getElementById('soundToggle');sound.addEventListener('click',()=>{audioOn=!audioOn;sound.innerHTML=audioOn?'◉ <span>صوت: ON</span>':'◉ <span>صوت</span>';if(audioOn)ping(620)});
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+document.getElementById('langToggle').addEventListener('click',e=>{const on=document.documentElement.lang==='ar';document.documentElement.lang=on?'en':'ar';document.documentElement.dir=on?'ltr':'rtl';e.target.textContent=on?'AR':'EN';document.body.classList.toggle('english',on);alert(on?'English interface is available for navigation.':'تمت استعادة الواجهة العربية.');});
+document.querySelector('.contact-form').addEventListener('submit',()=>{ping(700)});
